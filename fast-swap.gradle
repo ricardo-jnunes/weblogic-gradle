@@ -14,8 +14,8 @@ configurations {
 }
 dependencies {
     scheduleRuntime files(
-    '${wlsUser}/wlserver/server/lib/weblogic.jar',
-    '${wlsUser}/wlserver/modules/com.bea.core.redef.jar')
+    "${wlsHome}/wlserver/server/lib/weblogic.jar",
+    "${wlsHome}/wlserver/modules/com.bea.core.redef.jar")
 }
 
 //Load classpath
