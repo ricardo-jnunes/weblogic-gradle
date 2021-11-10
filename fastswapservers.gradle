@@ -1,0 +1,14 @@
+//WLS Configurations
+ext {
+        wlsUser = "weblogic"
+        wlsPwsd = "xxxxxxxxx"
+        wlsHome = "C:/Oracle/Middleware/Oracle_Home"
+}
+
+ext.fastswapConfigs = [
+    [
+        "url"           : "t3://localhost:10181",
+        "server"        : "server01",
+        "application"   : "app01"
+    ]
+]

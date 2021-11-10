@@ -1,0 +1,75 @@
+/*
+**************************************************
+* CONFIGURAÇÕES
+***************************************************
+*/
+
+ext.staticEarFiles = [
+    "${projectDir}/weblogic-application.xml" : "META-INF/weblogic-application.xml"
+];
+
+//Adiciona jar ao classpath
+configurations {
+    scheduleRuntime
+}
+dependencies {
+    scheduleRuntime files(
+    '${wlsUser}/wlserver/server/lib/weblogic.jar',
+    '${wlsUser}/wlserver/modules/com.bea.core.redef.jar')
+}
+
+//Load classpath
+def antClassLoader = org.apache.tools.ant.Project.class.classLoader
+configurations.scheduleRuntime.each { File f ->
+    antClassLoader.addURL(f.toURI().toURL())
+}
+
+def copyBinayFile(src, dest){ 
+    def srcPath = java.nio.file.Paths.get(src);
+    def destPath = java.nio.file.Paths.get(dest);
+    java.nio.file.Files.copy(srcPath, destPath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+}
+
+task('prepareAndCopyFiles', group: 'FS',
+    description: "Adapt the weblogic file in EAR to use fast-swap"){
+    doLast{
+        ears.each { earName, earConf ->
+            println "Configuring fast-swap: $earName"
+            staticEarFiles.each {entry ->
+                copyBinayFile(entry.key, earsDir + File.separator + earName + File.separator + entry.value);
+            }
+        }
+    }
+}
+
+task('fastSwap', group: 'FS',
+    description: "Running fast-swap"){
+    doLast{
+         fastswapConfigs.eachWithIndex{c, index ->
+            logger.info("Fast Swap for ${c.server}")
+            ant.taskdef(name: 'fastswap',
+                classname: 'com.bea.wls.redef.ant.FastSwapTask',
+                classpath: configurations.scheduleRuntime
+            )
+            ant.fastswap(
+                adminUrl: c.url,
+                user: wlsUser,
+                password: wlsPwsd,
+                server: c.server,
+                application: c.application
+            )
+        }
+    }
+}
+
+fastSwap.shouldRunAfter prepareAndCopyFiles
+
+//Root task
+task('all', group: 'FS',
+    description: 'Run fast-swap',
+    dependsOn: ['prepareAndCopyFiles', 'fastSwap']){
+    doLast{
+        logger.info('All - Adapt files and run fast-swap');
+           
+    }
+}
