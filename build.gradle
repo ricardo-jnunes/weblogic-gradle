@@ -32,7 +32,7 @@ overwriteProps.each{ propName ->
     if(System.getProperty(propName) && project.hasProperty(propName)){
         def oldValue = project.ext.get(propName);
         def newValue = System.getProperty(propName);
-        println "Overwrite project propertie: ${propName}. Old Value: ${oldValue} New Value: ${newValue}"
+        println "Overwrite project properties: ${propName}. Old Value: ${oldValue} New Value: ${newValue}"
         project.ext[propName] = newValue
     }
 }
