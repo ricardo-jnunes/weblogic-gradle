@@ -70,6 +70,5 @@ task('all', group: 'FS',
     dependsOn: ['prepareAndCopyFiles', 'fastSwap']){
     doLast{
         logger.info('All - Adapt files and run fast-swap');
-           
     }
 }
