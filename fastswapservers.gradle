@@ -1,7 +1,7 @@
 //WLS Configurations
 ext {
         wlsUser = "weblogic"
-        wlsPwsd = "xxxxxxxxx"
+        wlsPwsd = "xxxxxxxx"
         wlsHome = "C:/Oracle/Middleware/Oracle_Home"
 }
 
